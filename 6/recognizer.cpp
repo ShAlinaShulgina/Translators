@@ -25,6 +25,24 @@ int symbol;
 int value;
 int tscan;
 
+// возведение в степень
+int fPow(int one, int two)
+{
+    double count = 1;
+    while (two)
+        if (two & 1)
+        {
+            count *= one;
+            two--;
+        }
+        else
+        {
+            one *= one;
+            two >>= 1;
+        }
+    return count;
+}
+
 void error()
 {
     cout << "error" << endl;
@@ -131,7 +149,7 @@ int M()
         tscan = scan(sInput);
         ex *= E();
     }
-    
+
     return ex;
 }
 
@@ -156,7 +174,7 @@ int E()
             if(symbol == SYMBOL_RP)
             {
                 tscan = scan(sInput);
-                return pow(fa, fb);
+                return fPow(fa, fb);
             }
             else
                 error();
