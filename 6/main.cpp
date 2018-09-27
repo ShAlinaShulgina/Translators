@@ -220,18 +220,49 @@ void printFile(int sx)
 
 int main()
 {
-    output = fopen("resTask5.txt", "a+");
-
-    cin >> sInput;
-    while (sInput != "q")
+    fstream test;
+    test.open("test.txt", ios::in); // input test
+    if(!test.is_open())
     {
+        cout << "File test.txt not open!" << endl;
+        exit(1);
+    }
+//    output = fopen("resTask5.txt", "a+"); // output result
+    while(!test.eof())
+    {
+        test >> sInput;
+        cout << "sInput " << sInput << endl;
+
         index = 0;
         tscan = scan(sInput);
         int sx = S();
-        printf("sx = %d\n", sx);
-        printFile(sx);
-        cin >> sInput;
+
+//        printFile(sx);
+
+        int resTest = 0; string resT = "";
+        test >> resT;
+//        cout <<"REST " << resT << endl;
+        resTest = atoi(resT.c_str());
+//        cout << resTest << endl;
+        if (resTest == sx)
+            printf("YES! %d\n\n", sx);
+        else
+            printf("!NO! %d != %d\n\n", resTest, sx);
     }
-    fclose(output);
+    test.close();
+
+//    output = fopen("resTask5.txt", "a+");
+
+//    cin >> sInput;
+//    while (sInput != "q")
+//    {
+//        index = 0;
+//        tscan = scan(sInput);
+//        int sx = S();
+//        printf("sx = %d\n", sx);
+//        printFile(sx);
+//        cin >> sInput;
+//    }
+//    fclose(output);
     return 0;
 }
