@@ -228,8 +228,8 @@ int main()
         index = 0;
         tscan = scan(sInput);
         int sx = S();
-        printf("sx = %d\n", sx);
         printFile(sx);
+        printf("sx = %d\n", sx);
         cin >> sInput;
     }
     fclose(output);
