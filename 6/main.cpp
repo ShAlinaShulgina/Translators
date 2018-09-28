@@ -1,4 +1,4 @@
-#include <cstdlib>
+﻿#include <cstdlib>
 #include <cstdio>
 #include <cstdarg>
 #include <string>
@@ -19,28 +19,41 @@ using namespace std;
 FILE *output;
 
 string sInput = "";
-int index = 0;
+uint index = 0;
 
 int symbol;
 int value;
 int tscan;
 
-// возведение в степень
-int fPow(int one, int two)
+void printScan(int id)
 {
-    double count = 1;
-    while (two)
-        if (two & 1)
-        {
-            count *= one;
-            two--;
-        }
-        else
-        {
-            one *= one;
-            two >>= 1;
-        }
-    return count;
+    switch(id)
+    {
+        case 1:
+            cout << "SYMBOL_POW" << endl;
+            break;
+        case 2:
+            cout << "SYMBOL_LP" << endl;
+            break;
+        case 3:
+            cout << "SYMBOL_RP" << endl;
+            break;
+        case 4:
+            cout << "SYMBOL_MULT" << endl;
+            break;
+        case 5:
+            cout << "SYMBOL_PLUS" << endl;
+            break;
+        case 6:
+            cout << "SYMBOL_COMMA" << endl;
+            break;
+        case 7:
+            cout << "SYMBOL_I" << endl;
+            break;
+        default:
+            cout << endl;
+            break;
+    }
 }
 
 void error()
@@ -133,6 +146,7 @@ int S()
     if (symbol == SYMBOL_PLUS)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         mx += M();
     }
 
@@ -147,6 +161,7 @@ int M()
     if (symbol == SYMBOL_MULT)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         ex *= E();
     }
 
@@ -160,13 +175,16 @@ int E()
     if(symbol == SYMBOL_POW)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         if (symbol == SYMBOL_LP)
         {
             tscan = scan(sInput);
+            printScan(tscan);
             fa = S();
             if (symbol == SYMBOL_COMMA)
             {
                 tscan = scan(sInput);
+                printScan(tscan);
                 fb = S();
             }
             else
@@ -174,7 +192,8 @@ int E()
             if(symbol == SYMBOL_RP)
             {
                 tscan = scan(sInput);
-                return fPow(fa, fb);
+                printScan(tscan);
+                return pow(fa, fb);
             }
             else
                 error();
@@ -192,22 +211,29 @@ int F()
     if(symbol == SYMBOL_I)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         return value;
     }
+
     else if (symbol == SYMBOL_LP)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         int sx = S();
         if(symbol == SYMBOL_RP)
         {
             tscan = scan(sInput);
+            printScan(tscan);
             return sx;
         }
+
         else
             error();
+
     }
     else
         error();
+
 }
 
 void printFile(int sx)
@@ -227,6 +253,7 @@ int main()
     {
         index = 0;
         tscan = scan(sInput);
+        printScan(tscan);
         int sx = S();
         printFile(sx);
         printf("sx = %d\n", sx);
