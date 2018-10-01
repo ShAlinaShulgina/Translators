@@ -1,4 +1,4 @@
-#include <cstdlib>
+﻿#include <cstdlib>
 #include <cstdio>
 #include <cstdarg>
 #include <string>
@@ -15,6 +15,9 @@ using namespace std;
 #define SYMBOL_PLUS  5  // +
 #define SYMBOL_COMMA 6  // ,
 #define SYMBOL_I     7  // i
+
+#define ERROR_TYPE_1 "Missing character '%s'\n" // Отсутствует символ '%символ'
+#define ERROR_TYPE_2 "Input string != Output string '%s'\n"
 
 FILE *output;
 
@@ -43,11 +46,28 @@ int fPow(int one, int two)
     return count;
 }
 
-void error()
+void printScan(int id)
 {
-    cout << "error" << endl;
-    fprintf(output, "%s\n\n", "error");
-    exit(1);
+    switch(id)
+    {
+        case 1:     cout << "SYMBOL_POW" << endl;   break;
+        case 2:     cout << "SYMBOL_LP" << endl;    break;
+        case 3:     cout << "SYMBOL_RP" << endl;    break;
+        case 4:     cout << "SYMBOL_MULT" << endl;  break;
+        case 5:     cout << "SYMBOL_PLUS" << endl;  break;
+        case 6:     cout << "SYMBOL_COMMA" << endl; break;
+        case 7:     cout << "SYMBOL_I" << endl;     break;
+        default:    cout << endl;                   break;
+    }
+}
+
+void error(string type, bool flag = 0)
+{
+    if (flag)
+        fprintf(output, ERROR_TYPE_2, type.c_str());
+    else
+        fprintf(output, ERROR_TYPE_1, type.c_str());
+//    exit(1);
 }
 
 string getNum(string str)
@@ -133,6 +153,7 @@ int S()
     if (symbol == SYMBOL_PLUS)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         mx += M();
     }
 
@@ -147,6 +168,7 @@ int M()
     if (symbol == SYMBOL_MULT)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         ex *= E();
     }
 
@@ -160,27 +182,31 @@ int E()
     if(symbol == SYMBOL_POW)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         if (symbol == SYMBOL_LP)
         {
             tscan = scan(sInput);
+            printScan(tscan);
             fa = S();
             if (symbol == SYMBOL_COMMA)
             {
                 tscan = scan(sInput);
+                printScan(tscan);
                 fb = S();
             }
             else
-                error();
+                error(",");
             if(symbol == SYMBOL_RP)
             {
                 tscan = scan(sInput);
+                printScan(tscan);
                 return fPow(fa, fb);
             }
             else
-                error();
+                error(")");
         }
         else
-            error();
+            error("(");
     }
     else
         return fa = F();
@@ -192,30 +218,34 @@ int F()
     if(symbol == SYMBOL_I)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         return value;
     }
     else if (symbol == SYMBOL_LP)
     {
         tscan = scan(sInput);
+        printScan(tscan);
         int sx = S();
         if(symbol == SYMBOL_RP)
         {
             tscan = scan(sInput);
+            printScan(tscan);
             return sx;
         }
         else
-            error();
+            error(")");
     }
     else
-        error();
+        error("(");
 }
 
-void printFile(int sx)
+void printFile(int sx, string yesTest)
 {
     if (index != sInput.length())
-        error();
+        error("---", 1);
     fprintf(output, "%s\n", sInput.c_str());
-    fprintf(output, "sx = %d\n\n", sx);
+    fprintf(output, "sx = %d\n", sx);
+    fprintf(output, "test: %s\n\n", yesTest.c_str());
 }
 
 int main()
@@ -227,7 +257,13 @@ int main()
         cout << "File test.txt not open!" << endl;
         exit(1);
     }
-//    output = fopen("resTask5.txt", "a+"); // output result
+    output = fopen("resTask5.txt", "a+"); // output result
+    if (!output)
+    {
+        cout << "File resTask5.txt not open!" << endl;
+        exit(1);
+    }
+
     while(!test.eof())
     {
         test >> sInput;
@@ -235,34 +271,24 @@ int main()
 
         index = 0;
         tscan = scan(sInput);
+        printScan(tscan);
         int sx = S();
-
-//        printFile(sx);
 
         int resTest = 0; string resT = "";
         test >> resT;
-//        cout <<"REST " << resT << endl;
         resTest = atoi(resT.c_str());
-//        cout << resTest << endl;
         if (resTest == sx)
+        {
             printf("YES! %d\n\n", sx);
+            printFile(sx, "YES");
+        }
         else
+        {
             printf("!NO! %d != %d\n\n", resTest, sx);
+            printFile(sx, "NO");
+        }
     }
     test.close();
-
-//    output = fopen("resTask5.txt", "a+");
-
-//    cin >> sInput;
-//    while (sInput != "q")
-//    {
-//        index = 0;
-//        tscan = scan(sInput);
-//        int sx = S();
-//        printf("sx = %d\n", sx);
-//        printFile(sx);
-//        cin >> sInput;
-//    }
-//    fclose(output);
+    fclose(output);
     return 0;
 }
